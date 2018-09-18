@@ -4,7 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import ReduxPromise from "redux-promise";
 
-import reducers from './reducer/reducers';
+import reducer from './reducer/reducer';
 import TachesList from './TachesList';
 import About from './About';
 
@@ -15,7 +15,7 @@ import { createBottomTabNavigator } from 'react-navigation';
     About: {screen:About}
   })
   const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
-  store = createStoreWithMiddleware(reducers);
+  store = createStoreWithMiddleware(reducer);
 
 export default class App extends Component {
   render() {

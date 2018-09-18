@@ -3,7 +3,11 @@ import { View, Text, FlatList, StyleSheet,Button, TouchableOpacity, TextInput } 
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 
-import { getTaches, patchTaches, postTaches, deleteTaches } from './action/taches_action';
+import { ACTIONS } from './action/action';
+
+import ScrollInfini from './ScrollInfini';
+
+import {dateToFormat} from "./_libs/date"
 
 class TachesList extends Component {
 	constructor(props) {
@@ -11,33 +15,47 @@ class TachesList extends Component {
 		this.state = { text: "" };
 	}
 	componentDidMount() {
-		this.props.getTaches();
+		//console.log(this.props)
+		//this.props.getTaches({});
 	}
 	pressItem(id){
-	
-		this.props.patchTaches({id,done:!this.props.taches.find(tache=>tache.id==id).done})
+		this.props.tacheUp({id, done:!this.props.taches.find(tache=>tache.id==id).done})
 	}
 	pressSuppr(id){
-		 this.props.deleteTaches(id)
+		 this.props.tacheRm(id)
 	}
 	pressAdd(){
 		if(this.state.text.length>0){
-		 this.props.postTaches({name:this.state.text,done:false})
+		 this.props.tacheAdd({name:this.state.text,done:false})
 		 this.setState({text:""})
 		}
 	}
 	renderItem({ item }){
+			let la_date = new Date(item.created_at)
+			let heure = la_date.getHours()
 			return <TouchableOpacity onPress={this.pressItem.bind(this,item.id)} style={styles.item}>
 			
-				<Text style={{flex:4, color:item.done?"blue":"green"}}>{item.name}</Text>
+				<Text style={{flex:4, color:item.done?"blue":"green"}}>{item.name+" "+dateToFormat(la_date)+heure}</Text>
 				<Button onPress={this.pressSuppr.bind(this,item.id)} style={{flex:1}} title="X"/>
 			</TouchableOpacity>
 	}
+	
 	render() {
+
 		const { taches } = this.props;
-		//console.log("taches", taches);
 		return (
-			<View>
+			
+				<ScrollInfini 
+					nbpp = {2}
+					reload={false}
+					nb_charge={this.props.taches.length}
+					nb_total={this.props.nb_taches}
+					initFnt = {this.props.tacheGetSSL.bind(this)}
+					addFnt = {this.props.tacheGetAddSSL.bind(this)}
+					countFnt = {this.props.tacheCount.bind(this)}
+					condition = {{}}
+					fnt = {()=>{}}
+				>
 				<View style={{flexDirection:"row", display:"flex"}}>
 					<TextInput
 						style={{height:40, borderColor: 'gray', borderWidth: 1, flex:1}}
@@ -48,11 +66,11 @@ class TachesList extends Component {
 				</View>
 					<FlatList
 						style={styles.container}
-						data={taches.slice().reverse()}
+						data={taches&&taches.length>0?taches:[]}
 						renderItem={this.renderItem.bind(this)}
 						keyExtractor={(item,i) => i.toString()}
 					/>
-			</View>
+			</ScrollInfini>
 		);
 	}
 }
@@ -71,9 +89,12 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps( state ){
+
 	return (
 		{
-			taches: state.taches.taches,
+			taches: state.tache.all,
+			nb_taches: state.tache.count,
+
 			
 		}
 	);
@@ -81,10 +102,12 @@ function mapStateToProps( state ){
 
 function mapDispatchToProps( dispatch ){
 	return bindActionCreators({
-		getTaches: getTaches,
-		patchTaches: patchTaches,
-		postTaches: postTaches,
-		deleteTaches: deleteTaches,
+		tacheGetSSL: ACTIONS.Tache.get_SSL,
+		tacheGetAddSSL: ACTIONS.Tache.getAdd_SSL,
+		tacheUp: ACTIONS.Tache.up,
+		tacheAdd: ACTIONS.Tache.add,
+		tacheRm: ACTIONS.Tache.rm,
+		tacheCount: ACTIONS.Tache.count,
 	}, dispatch );
 }
 
