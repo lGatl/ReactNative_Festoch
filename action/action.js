@@ -239,11 +239,9 @@ function up(modif, cbk = ()=>{}){
 	}
 
 	function count(obj, cbk = ()=>{}){
-		console.log("COUNT")
 		let p = new Promise( ( resolve, reject ) =>{
 			axios.get("http://localhost:3000/api/"+COLLECTION.toLowerCase()+"s/count/?filter="+JSON.stringify({where:obj}))
 		.then((response)=>{
-			console.log(response.data.count)
 			cbk(response.data.count)
 			resolve({ val:response.data.count, state:null})
 		})
