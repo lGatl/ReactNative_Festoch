@@ -2,13 +2,14 @@
 import { CONSTANTES } from "../action/action";
 import { COLLECTIONS } from "../action/action";
 
+import { REDUCER_user_add } from "./user_reducer";
+
 var REDUCER = {};
 COLLECTIONS.forEach((COLLECTION)=>{
   const DEFAULTS = {
     all: [],
     one: {},
     controle:{}
-    
   };
 
   REDUCER[COLLECTION.toLowerCase()] = function (  state = DEFAULTS, action ) {
@@ -129,7 +130,8 @@ COLLECTIONS.forEach((COLLECTION)=>{
       return { ...state, controle:{...state.controle,...action.payload} };
       break;
     }
-    return state;
+    return COLLECTION == "User" ?
+      {...state, ...REDUCER_user_add(state, action) } : state;
   };
 
 });

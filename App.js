@@ -7,12 +7,14 @@ import ReduxPromise from "redux-promise";
 import reducer from './reducer/reducer';
 import TachesList from './TachesList';
 import About from './About';
+import Login from './Login';
+import User from './User';
 
 import { createBottomTabNavigator } from 'react-navigation';
 
   const Tabs = createBottomTabNavigator({
-    RepoList: {screen:TachesList},
-    About: {screen:About}
+    Login: {screen:Login},
+    RepoList: {screen:TachesList}
   })
   const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
   store = createStoreWithMiddleware(reducer);
@@ -22,6 +24,7 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <View style = {{flex:1, marginTop:40}}>
+          <User/>
           <Tabs />
         </View>
         

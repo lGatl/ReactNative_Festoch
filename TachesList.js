@@ -10,10 +10,7 @@ import ScrollInfini from './ScrollInfini';
 import {dateToFormat} from "./_libs/date"
 
 class TachesList extends Component {
-	constructor(props) {
-		super(props);
-		this.state = { text: "" };
-	}
+	
 	componentDidMount() {
 		//console.log(this.props)
 		//this.props.getTaches({});
@@ -25,9 +22,9 @@ class TachesList extends Component {
 		 this.props.tacheRm(id)
 	}
 	pressAdd(){
-		if(this.state.text.length>0){
-		 this.props.tacheAdd({name:this.state.text,done:false})
-		 this.setState({text:""})
+		if(this.props.controle.text.length>0){
+		 this.props.tacheAdd({name:this.props.controle.text,done:false})
+		 this.props.tacheControle({text:""})
 		}
 	}
 	renderItem({ item }){
@@ -42,7 +39,7 @@ class TachesList extends Component {
 	
 	render() {
 
-		const { taches } = this.props;
+		const { taches, controle, active_user } = this.props;
 		return (
 			
 				<ScrollInfini 
@@ -57,10 +54,11 @@ class TachesList extends Component {
 					fnt = {()=>{}}
 				>
 				<View style={{flexDirection:"row", display:"flex"}}>
+				<Text>LISTE{active_user&&active_user.username?active_user.username:"inconnu"} </Text>
 					<TextInput
 						style={{height:40, borderColor: 'gray', borderWidth: 1, flex:1}}
-						onChangeText={(text) => this.setState({text})}
-						value={this.state.text}
+						onChangeText={(text) => this.props.tacheControle({text})}
+						value={controle.text}
 					/>
 					<Button onPress={this.pressAdd.bind(this)} style={{flex:1}} title="+"/>
 				</View>
@@ -92,6 +90,8 @@ function mapStateToProps( state ){
 
 	return (
 		{
+			active_user: state.user.active_user,
+			controle:state.tache.controle,
 			taches: state.tache.all,
 			nb_taches: state.tache.count,
 
@@ -102,6 +102,7 @@ function mapStateToProps( state ){
 
 function mapDispatchToProps( dispatch ){
 	return bindActionCreators({
+		tacheControle: ACTIONS.Tache.controle,
 		tacheGetSSL: ACTIONS.Tache.get_SSL,
 		tacheGetAddSSL: ACTIONS.Tache.getAdd_SSL,
 		tacheUp: ACTIONS.Tache.up,

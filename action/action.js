@@ -1,8 +1,10 @@
 import axios from 'axios'
 
 import { CONSTANTE_Controle, ACTION_Controle } from "./controle_action";
+import { CONSTANTE_User, ACTION_User } from "./user_action";
 
-export let COLLECTIONS = ["Tache"]
+
+export let COLLECTIONS = ["Tache","User"]
 
 const CONSTANTE = {};
 const ACTION = {};
@@ -297,10 +299,12 @@ function up(modif, cbk = ()=>{}){
 
 export const CONSTANTES = { ...CONSTANTE,
 	Controle:{...CONSTANTE_Controle},
+	User:{ ...CONSTANTE.User, ...CONSTANTE_User }
 	
 };
 export const ACTIONS = { ...ACTION,
 	Controle:{...ACTION_Controle},
+	User:{ ...ACTION.User, ...ACTION_User }
 	
 };
 
